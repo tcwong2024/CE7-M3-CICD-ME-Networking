@@ -9,9 +9,9 @@ on:
         required: true
         default: "DEV"
       action:
-        description: "Action to perform (apply or destroy)"
+        description: "Action to perform (Apply or Destroy)"
         required: true
-        default: "apply"
+        default: "Apply"
 
 jobs:
   Terraform-Apply:
@@ -47,7 +47,7 @@ jobs:
         run: terraform init
 
       - name: Select Terraform Workspace
-        run: terraform workspace select ${{ github.event.inputs.environment }} | lower
+        run: terraform workspace select ${{ github.event.inputs.environment }} 
 
       - name: Terraform Plan
         run: terraform plan
@@ -55,14 +55,14 @@ jobs:
       - name: Terraform Apply or Destroy
         env:
           TF_VAR_region:
-            ${{ github.event.inputs.environment == 'DEV' && secrets.DEV_REGION ||
-            github.event.inputs.environment == 'UAT' && secrets.UAT_REGION ||
-            github.event.inputs.environment == 'PROD' && secrets.PROD_REGION }}
+            ${{ github.event.inputs.environment == 'DEV' && vars.DEV_REGION ||
+            github.event.inputs.environment == 'UAT' && vars.UAT_REGION ||
+            github.event.inputs.environment == 'PROD' && vars.PROD_REGION }}
 
         run: |
-          if [ "${{ github.event.inputs.action }}" == "apply" ]; then
+          if [ "${{ github.event.inputs.action }}" == "Apply" ]; then
             terraform apply  -auto-approve
-          elif [ "${{ github.event.inputs.action }}" == "destroy" ]; then
+          elif [ "${{ github.event.inputs.action }}" == "Destroy" ]; then
             terraform destroy  -auto-approve
           fi
 
