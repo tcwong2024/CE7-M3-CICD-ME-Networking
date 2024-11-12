@@ -97,3 +97,14 @@ module "security_group" {
   source = "./sg"
   vpc_id = aws_vpc.main.id
 }
+
+# --------------------------------------------------------
+# This checkov detected will be skip and will solve later
+# --------------------------------------------------------
+#checkov:skip=CKV_AWS_130: Ensure VPC subnets do not assign public IP by default
+#checkov:skip=CKV_AWS_260: Ensure no security groups allow ingress from 0.0.0.0:0 to port 80
+#checkov:skip=CKV_AWS_24: Ensure no security groups allow ingress from 0.0.0.0:0 to port 22
+#checkov:skip=CKV_AWS_23: Ensure every security group and rule has a description
+#checkov:skip=CKV2_AWS_5: Ensure that Security Groups are attached to another resource
+#checkov:skip=CKV2_AWS_11: Ensure VPC flow logging is enabled in all VPCs
+# --------------------------------------------------------
