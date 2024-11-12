@@ -1,0 +1,58 @@
+name: WF3 CI Terraform Plan
+run-name: Running CI Terraform Plan Pipeline by ${{ github.actor }}
+
+on:
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "terraform/*"
+
+jobs:
+  Terraform-Plan:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform
+
+    outputs:
+      status: ${{ job.status }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.REGION_NAME }}
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.6
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan
+
+  Summary:
+    needs: [Terraform-Plan]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Adding markdown
+        run: |
+          TF_STATUS=${{ needs.Terraform-Plan.outputs.status }}
+
+          echo '## 🚀 Preparing Build Summary 🚀' >> $GITHUB_STEP_SUMMARY
+          echo '' >> $GITHUB_STEP_SUMMARY
+
+          echo "| Job Name        | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----------------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Terraform-Plan    | $TF_STATUS |" >> $GITHUB_STEP_SUMMARY
+          echo '' >> $GITHUB_STEP_SUMMARY
+
+          echo '## Job ran by: ${{ github.actor }}' >> $GITHUB_STEP_SUMMARY
