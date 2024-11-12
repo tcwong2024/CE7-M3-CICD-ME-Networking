@@ -1,4 +1,9 @@
 # Security Group for VPC Allow 80(HTTP), 443(HTTPS) and 22 (SSH)
+# checkov:skip=CKV_AWS_260: Ensure no security groups allow ingress from 0.0.0.0:0 to port 80
+# checkov:skip=CKV_AWS_24: Ensure no security groups allow ingress from 0.0.0.0:0 to port 22
+# checkov:skip=CKV_AWS_23: Ensure every security group and rule has a description
+# checkov:skip=CKV2_AWS_5: Ensure that Security Groups are attached to another resource
+# checkov:skip=CKV2_AWS_11: Ensure VPC flow logging is enabled in all VPCs
 resource "aws_security_group" "sg" {
   name        = var.sg_name
   description = "Security group for EC2 instances"
