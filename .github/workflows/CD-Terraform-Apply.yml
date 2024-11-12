@@ -47,7 +47,7 @@ jobs:
         run: terraform init
 
       - name: Select Terraform Workspace
-        run: terraform workspace select ${{ github.event.inputs.environment }}
+        run: terraform workspace select ${{ github.event.inputs.environment }} | lower
 
       - name: Terraform Plan
         run: terraform plan
