@@ -1,4 +1,4 @@
-name: WF4 CD-Terraform Apply [Setup VPC OR Destroy]
+name: WF4 CD-TF Apply [Create VPC/Destroy]
 run-name: Running CD Terraform Apply Pipeline by ${{ github.actor }}
 
 on:
@@ -7,11 +7,21 @@ on:
       environment:
         description: "Environment to deploy (DEV, UAT, PROD)"
         required: true
+        type: choice
         default: "DEV"
+        options:
+          - DEV
+          - UAT
+          - PROD
+
       action:
         description: "Action to perform (Apply or Destroy)"
         required: true
+        type: choice
         default: "Apply"
+        options:
+          - Apply
+          - Destroy
 
 jobs:
   Terraform-Apply:
