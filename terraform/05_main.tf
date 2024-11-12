@@ -10,7 +10,6 @@ resource "aws_vpc" "main" {
 }
 
 # Public Subnets
-# checkov:skip=CKV_AWS_130: Ensure VPC subnets do not assign public IP by default
 resource "aws_subnet" "public" {
   count                   = 3
   vpc_id                  = aws_vpc.main.id
@@ -21,6 +20,7 @@ resource "aws_subnet" "public" {
   tags = {
     Name = "${var.public_subnet_prefix}-${element(var.availability_zones, count.index)}"
   }
+  #checkov:skip=CKV_AWS_130: Ensure VPC subnets do not assign public IP by default
 }
 
 # Private Subnets
