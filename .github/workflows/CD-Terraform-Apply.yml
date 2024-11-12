@@ -1,13 +1,13 @@
-name: WF4 Terraform Setup VPC OR Destroy
+name: WF4 CD-Terraform Apply [Setup VPC OR Destroy]
 run-name: Running CD Terraform Apply Pipeline by ${{ github.actor }}
 
 on:
   workflow_dispatch:
     inputs:
       environment:
-        description: "Environment to deploy (dev, uat, prod)"
+        description: "Environment to deploy (DEV, UAT, PROD)"
         required: true
-        default: "dev"
+        default: "DEV"
       action:
         description: "Action to perform (apply or destroy)"
         required: true
@@ -54,12 +54,16 @@ jobs:
 
       - name: Terraform Apply or Destroy
         env:
-          TF_VAR_region: ${{ env.AWS_REGION }}
+          TF_VAR_region:
+            ${{ github.event.inputs.environment == 'DEV' && secrets.DEV_REGION ||
+            github.event.inputs.environment == 'UAT' && secrets.UAT_REGION ||
+            github.event.inputs.environment == 'PROD' && secrets.PROD_REGION }}
+
         run: |
           if [ "${{ github.event.inputs.action }}" == "apply" ]; then
-            terraform apply -var-file="${{ github.event.inputs.environment }}.tfvars" -auto-approve
+            terraform apply  -auto-approve
           elif [ "${{ github.event.inputs.action }}" == "destroy" ]; then
-            terraform destroy -var-file="${{ github.event.inputs.environment }}.tfvars" -auto-approve
+            terraform destroy  -auto-approve
           fi
 
   Summary:
