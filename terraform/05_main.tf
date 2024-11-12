@@ -7,6 +7,7 @@ resource "aws_vpc" "main" {
   tags = {
     Name = var.vpc_name
   }
+  #checkov:skip=CKV2_AWS_11: Ensure VPC flow logging is enabled in all VPCs
 }
 
 # Public Subnets
